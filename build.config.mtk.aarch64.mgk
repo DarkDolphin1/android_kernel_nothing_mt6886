@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 KERNEL_DIR=common
-=======
-KERNEL_DIR=kernel-5.15
->>>>>>> fuki/upstream
-
 . ${ROOT_DIR}/${KERNEL_DIR}/build.config.common
 . ${ROOT_DIR}/${KERNEL_DIR}/build.config.lto_thin
 . ${ROOT_DIR}/${KERNEL_DIR}/build.config.aarch64
