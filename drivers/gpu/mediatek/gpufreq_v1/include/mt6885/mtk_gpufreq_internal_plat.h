@@ -181,7 +181,6 @@
 #define VOLT_NORMALIZATION(volt)	\
 	((volt % 625) ? (volt - (volt % 625) + 625) : volt)
 #ifndef MIN
-#undef MIN
 #define MIN(x, y)	(((x) < (y)) ? (x) : (y))
 #endif
 
