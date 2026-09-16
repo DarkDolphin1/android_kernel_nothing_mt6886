@@ -26,7 +26,6 @@
 #define TCPC_NORMAL_RP_DUTY	(308)		/* 30% */
 
 #ifndef MIN
-#undef MIN
 #define MIN(a, b)       (((a) < (b)) ? (a) : (b))
 #endif
 

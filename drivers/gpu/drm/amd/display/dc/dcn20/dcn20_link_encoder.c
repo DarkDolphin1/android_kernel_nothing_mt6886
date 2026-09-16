@@ -50,11 +50,9 @@
 	(enc10->link_regs->index)
 
 #ifndef MAX
-#undef MAX
 #define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
 #endif
 #ifndef MIN
-#undef MIN
 #define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
 #endif
 
