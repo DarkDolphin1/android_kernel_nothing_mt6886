@@ -2343,7 +2343,7 @@ static inline void idle_set_state(struct rq *rq,
 
 static inline struct cpuidle_state *idle_get_state(struct rq *rq)
 {
-	SCHED_WARN_ON(!rcu_read_lock_held());
+	SCHED_WARN_ON(!rcu_read_lock_sched_held());
 
 	return rq->idle_state;
 }
@@ -2542,6 +2542,14 @@ static __always_inline
 unsigned long arch_scale_freq_capacity(int cpu)
 {
 	return SCHED_CAPACITY_SCALE;
+}
+#endif
+
+#ifndef arch_scale_min_freq_capacity
+static __always_inline
+unsigned long arch_scale_min_freq_capacity(int cpu)
+{
+	return 0;
 }
 #endif
 
