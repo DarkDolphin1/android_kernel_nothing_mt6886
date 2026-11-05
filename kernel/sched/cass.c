@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * Copyright (C) 2023-2024 Sultan Alsawaf <sultan@kerneltoast.com>.
+ * Copyright (C) 2023-2025 Sultan Alsawaf <sultan@kerneltoast.com>.
  */
 
 /**
@@ -297,21 +297,22 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		    available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
 			/*
 			 * A non-idle candidate may be better for energy
-			 * efficiency when @p is uclamp boosted, or when the
-			 * only idle candidate found so far is the prime CPU.
-			 * Otherwise, prefer idle candidates.
+			 * efficiency when @p is uclamp boosted above @curr's
+			 * minimum capacity, or when the only idle candidate
+			 * found so far is the prime CPU. Otherwise, prefer idle
+			 * candidates..
 			 */
-			if (!uc_min && !cass_prime_cpu(curr)){
+			if (!has_idle &&
+			    uc_min <= arch_scale_min_freq_capacity(cpu) &&
+			    !cass_prime_cpu(curr)) {
 				/*
 				 * Discard any previous non-idle candidate.
 				 * Don't treat the prime CPU as an idle fallback,
 				 * so that a busier non-prime CPU can still win
 				 * via cass_cpu_better().
 				 */
-				if (!has_idle) {
-					best = curr;
-					has_idle = true;
-				}
+				best = curr;
+				has_idle = true;
 			}
 
 			/* Nonzero exit latency indicates this CPU is idle */
