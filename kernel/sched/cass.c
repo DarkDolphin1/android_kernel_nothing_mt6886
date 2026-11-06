@@ -107,8 +107,8 @@ bool cass_cpu_better(const struct cass_cpu_cand *a,
 	long util_diff;
 
 	/* Prefer the CPU that's not overloaded */
-	if (cass_cmp((u64)b->eff_util * a->cap_max,
-		     (u64)a->eff_util * b->cap_max))
+	if (cass_cmp((u64)a->eff_util * a->cap_max,
+		     (u64)b->eff_util * b->cap_max))
 		goto done;
 
 	/* Prefer the CPU that's less overloaded if they're both overloaded */
