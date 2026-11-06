@@ -1616,24 +1616,13 @@ int LZ4_compress_HC_extStateHC (void* state, const char* src, char* dst, int src
     return LZ4_compress_HC_extStateHC_fastReset(state, src, dst, srcSize, dstCapacity, compressionLevel);
 }
 
-int LZ4_compress_HC(const char* src, char* dst, int srcSize, int dstCapacity, int compressionLevel)
+int LZ4_compress_HC(const char* src, char* dst, int srcSize, int dstCapacity, int compressionLevel, void *wrkmem)
 {
-    int cSize;
     DEBUGLOG(5, "LZ4_compress_HC")
-#if defined(LZ4HC_HEAPMODE) && LZ4HC_HEAPMODE==1
-    {   /* extended state : a single allocation, including the temporary buffer of levels >= 10 */
-        LZ4_streamHC_t* const statePtr = LZ4_initStreamHC(ALLOC(LZ4_STREAMHC_EXTSIZE), LZ4_STREAMHC_EXTSIZE);
-        if (statePtr==NULL) return 0;
-        cSize = LZ4_compress_HC_extStateHC_fastReset(statePtr, src, dst, srcSize, dstCapacity, compressionLevel);
-        FREEMEM(statePtr);
-    }
-#else
-    {   LZ4_streamHC_t state;
-        cSize = LZ4_compress_HC_extStateHC(&state, src, dst, srcSize, dstCapacity, compressionLevel);
-    }
-#endif
-    return cSize;
+    return LZ4_compress_HC_extStateHC(wrkmem, src, dst, srcSize, dstCapacity, compressionLevel);
 }
+
+EXPORT_SYMBOL(LZ4_compress_HC);
 
 /* state is presumed sized correctly (>= sizeof(LZ4_streamHC_t)) */
 int LZ4_compress_HC_destSize(void* state, const char* source, char* dest, int* sourceSizePtr, int targetDestSize, int cLevel)
@@ -2244,21 +2233,7 @@ LZ4LIB_API int   LZ4_resetStreamStateHC(void* state, char* inputBuffer);
 }
 #endif
 
-/* Wrappers for deprecated compression functions */
-int LZ4_compressHC(const char* src, char* dst, int srcSize) { return LZ4_compress_HC (src, dst, srcSize, LZ4_compressBound(srcSize), 0); }
-int LZ4_compressHC_limitedOutput(const char* src, char* dst, int srcSize, int maxDstSize) { return LZ4_compress_HC(src, dst, srcSize, maxDstSize, 0); }
-int LZ4_compressHC2(const char* src, char* dst, int srcSize, int cLevel) { return LZ4_compress_HC (src, dst, srcSize, LZ4_compressBound(srcSize), cLevel); }
-int LZ4_compressHC2_limitedOutput(const char* src, char* dst, int srcSize, int maxDstSize, int cLevel) { return LZ4_compress_HC(src, dst, srcSize, maxDstSize, cLevel); }
-int LZ4_compressHC_withStateHC (void* state, const char* src, char* dst, int srcSize) { return LZ4_compress_HC_extStateHC (state, src, dst, srcSize, LZ4_compressBound(srcSize), 0); }
-int LZ4_compressHC_limitedOutput_withStateHC (void* state, const char* src, char* dst, int srcSize, int maxDstSize) { return LZ4_compress_HC_extStateHC (state, src, dst, srcSize, maxDstSize, 0); }
-int LZ4_compressHC2_withStateHC (void* state, const char* src, char* dst, int srcSize, int cLevel) { return LZ4_compress_HC_extStateHC(state, src, dst, srcSize, LZ4_compressBound(srcSize), cLevel); }
-int LZ4_compressHC2_limitedOutput_withStateHC (void* state, const char* src, char* dst, int srcSize, int maxDstSize, int cLevel) { return LZ4_compress_HC_extStateHC(state, src, dst, srcSize, maxDstSize, cLevel); }
-int LZ4_compressHC_continue (LZ4_streamHC_t* ctx, const char* src, char* dst, int srcSize) { return LZ4_compress_HC_continue (ctx, src, dst, srcSize, LZ4_compressBound(srcSize)); }
-int LZ4_compressHC_limitedOutput_continue (LZ4_streamHC_t* ctx, const char* src, char* dst, int srcSize, int maxDstSize) { return LZ4_compress_HC_continue (ctx, src, dst, srcSize, maxDstSize); }
 
-
-/* Deprecated streaming functions */
-int LZ4_sizeofStreamStateHC(void) { return sizeof(LZ4_streamHC_t); }
 
 /* state is presumed correctly sized, aka >= sizeof(LZ4_streamHC_t)
  * @return : 0 on success, !=0 if error */
