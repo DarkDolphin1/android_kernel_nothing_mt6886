@@ -435,14 +435,14 @@ static int cass_select_task_rq(struct task_struct *p, int prev_cpu, int sd_flag,
 	return cass_best_cpu(p, prev_cpu, sync, rt);
 }
 
-static int cass_select_task_rq_fair(struct task_struct *p, int prev_cpu,
-				    int sd_flag, int wake_flags)
+static int cass_select_task_rq_fair(struct task_struct *p, int prev_cpu, int wake_flags)
 {
+	int sd_flag = wake_flags & 0xF;
 	return cass_select_task_rq(p, prev_cpu, sd_flag, wake_flags, false);
 }
 
-int cass_select_task_rq_rt(struct task_struct *p, int prev_cpu, int sd_flag,
-			   int wake_flags)
+int cass_select_task_rq_rt(struct task_struct *p, int prev_cpu, int wake_flags)
 {
+	int sd_flag = wake_flags & 0xF;
 	return cass_select_task_rq(p, prev_cpu, sd_flag, wake_flags, true);
 }
