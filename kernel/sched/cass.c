@@ -285,7 +285,7 @@ static int cass_best_cpu(struct task_struct *p, int prev_cpu, bool sync, bool rt
 		 * thermal pressure accounting, so the maximum and current
 		 * capacities are the same.
 		 */
-		curr->cap_max = arch_scale_cpu_capacity(NULL, cpu);
+		curr->cap_max = arch_scale_cpu_capacity(cpu);
 
 		/* Prefer the CPU that more closely meets the uclamp minimum */
 		if (curr->cap_max < uc_min && curr->cap_max < best->cap_max)
